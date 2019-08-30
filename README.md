@@ -1,13 +1,13 @@
 
-# Terraform Hiera Provider
-This provider implements data sources that can be used to perform hierachical data lookups with Hiera.
+# Terraform Go Hiera Provider
+This provider is forked from puppet hiera provider and implements data sources that can be used to perform hierachical data lookups with go implementation of [Hiera](https://github.com/lyraproj/hiera).
 
-This is useful for providing configuration values in an environment with a high level of dimensionality or for making values from an existing Puppet deployment available in Terraform.
+This is useful for providing configuration values in an environment with a high level of dimensionality.
 
 ## Requirements
 * [Terraform](https://www.terraform.io/downloads.html) 0.10.x
 * [Go](https://golang.org/doc/install) 1.9 (to build the provider plugin)
-* [Hiera](https://puppet.com/docs/hiera/3.3/index.html) (version v3)
+* [Hiera written in go](https://github.com/lyraproj/hiera)
 
 ## Usage
 To configure the provider:
@@ -23,17 +23,25 @@ provider "hiera" {
   }
 }
 ```
-By default, the provider expects `hiera` to be available in your `$PATH`. It will also look for the configuration file at `/etc/puppetlabs/puppet/hiera.yaml`. You can override both those values if you so wish:
+By default, the provider expects `lookup` to be available in your `$PATH`. It will also look for the configuration file at current working directory with name `hiera.yaml`. You can override both those values if you so wish:
 ```hcl
 provider "hiera" {
   config = "~/hiera.yaml"
-  bin    = "/usr/local/bin/hiera"
+  bin    = "/usr/local/bin/lookup"
   scope {
     environment = "live"
     service     = "api"
   }
 }
 ```
+
+You can configure merge strategy for variables as well:
+```hcl
+provider "hiera" {
+  merge = "deep"
+}
+```
+
 ## Data Sources
 This provider only implements data sources.
 #### Hash
@@ -79,7 +87,7 @@ All values are returned as strings because Terraform doesn't implement other typ
 ## Example
 Here's an example of setting different values and data types at multiple levels in Hiera and then retrieving those values as data sources for use in outputs.
 
-**/etc/puppetlabs/puppet/hiera.yaml**
+**hiera.yaml**
 ```yaml
 ---
 :backends:
@@ -205,5 +213,3 @@ java_opts = [
     -Dspring.profiles.active=live
 ]
 ```
-## TODO
-Hiera v3 is deprecated now in favour of the new Hiera v5 which is built directly into Puppet. This provider won't work with v5 because it relies on the command line script which has been removed. It's possible we could use `puppet lookup` in its place.
