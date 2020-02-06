@@ -1,4 +1,4 @@
-module github.com/ribbybibby/terraform-provider-hiera
+module github.com/SmilingNavern/terraform-provider-gohiera
 
 go 1.12
 

@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/hashicorp/terraform/plugin"
-	"github.com/ribbybibby/terraform-provider-hiera/hiera"
+	"github.com/SmilingNavern/terraform-provider-gohiera/hiera"
 )
 
 func main() {
